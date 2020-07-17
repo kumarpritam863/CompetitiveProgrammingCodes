@@ -8,48 +8,39 @@ import java.util.StringTokenizer;
 import java.io.BufferedReader; 
 import java.util.*;
 
-class D{
+class lcs{
 	public static FastReader fs = new FastReader();
-	static long W_MAX = (long)1e12;
-	
-	static long solveDp(int r, int i, intpair [] a, int n,int v[][],long dp[][]) 
-	{  
-	    if (r <= 0) 
-	        return 0; 
-	    if (i == n) 
-	        return W_MAX; 
-	    if (v[r][i] == 1) 
-	        return dp[r][i]; 
-	    v[r][i] = 1; 
-	    dp[r][i] 
-	        = min(solveDp(r, i + 1, a, n,v,dp), 
-	              a[i].x + solveDp(r - a[i].y, 
-	                             i + 1, a, n,v,dp)); 
-	    return dp[r][i]; 
-	}
 	
 	static PrintWriter out = new PrintWriter(System.out);
 	
 	public static void solve() {
 		StringBuffer output = new StringBuffer();
-		int n = fs.nextInt(),w = fs.nextInt();
-		intpair a [] = new intpair[n];
-		for(int i = 0; i<n; i++) {
-			a[i] = new intpair(fs.nextInt(),fs.nextInt());
+		String x = fs.next(),y = fs.next();
+		int n = x.length(),m = y.length();
+		int dp [][] = new int [n+1][m+1];
+		for(int i = 1; i<=n; i++) {
+			for(int j = 1; j<=m; j++) {
+				if(x.charAt(i-1) == y.charAt(j-1))dp[i][j] = dp[i-1][j-1]+1;
+				else dp[i][j] = max(dp[i-1][j],dp[i][j-1]);
+			}
 		}
-		int sum = 0;
-		for(int i = 0; i<n; i++)sum += a[i].y;
-		long dp [][] = new long[sum+1][n];
-		int v [][] = new int[sum+1][n];
-		int ans = -1;
-		for (int i = sum; i >= 0; i--) { 
-	        if (solveDp(i, 0, a, n,v,dp) <= w) { 
-	            ans = i; 
-	            break;
-	        } 
-	    } 
-		output.append(ans);
+		int mx = dp[n][m];
+		String ans = "";
+		int i = n,j = m;
+		while(i>0 && j>0) {
+			if(x.charAt(i-1) == y.charAt(j-1)) {
+				ans += x.charAt(i-1);
+				i-=1;
+				j-=1;
+			}
+			else if(dp[i-1][j] > dp[i][j-1])i-=1;
+			else j-=1;
+		}
+		if(ans.length()!=0) {
+		for(i = ans.length()-1; i>=0; i--)output.append(ans.charAt(i));
 		out.println(output);
+		}
+		else out.println("");
 	}
 	
 	public static void main(String[] args) {
@@ -265,44 +256,44 @@ class D{
 	
 	static class Seg_Tree extends data{
 		public int n;
-		long [] seg;
+		data [] seg;
 		
 		Seg_Tree(int sz){
 			this.n = sz;
-			seg = new long[4*n+4];
+			seg = new data[4*n+4];
 		}
 		
 		void build(long a[], int v, int tl, int tr) {
 		    if (tl == tr) {
-		        seg[v] = a[tl];
+		        seg[v] = new data(a[tl]);
 		    } else {
 		        int tm = (tl + tr) / 2;
 		        build(a, v*2, tl, tm);
 		        build(a, v*2+1, tm+1, tr);
-		        seg[v] = seg[v*2]+seg[v*2+1];
+		        seg[v] = combine(seg[v*2],seg[v*2+1]);
 		    }
 		}
 
 		void update(int v, int tl, int tr, int pos, long new_val) {
 		    if (tl == tr) {
-		        seg[v] = new_val;
+		        seg[v] = new data(new_val);
 		    } else {
 		        int tm = (tl + tr) / 2;
 		        if (pos <= tm)
 		            update(v*2, tl, tm, pos, new_val);
 		        else
 		            update(v*2+1, tm+1, tr, pos, new_val);
-		        seg[v] = seg[v*2]+seg[v*2+1];
+		        seg[v] = combine(seg[v*2],seg[v*2+1]);
 		    }
 		}
 		
-		long query(int v, int tl, int tr, int l, int r) {
+		data query(int v, int tl, int tr, int l, int r) {
 		    if (l > r) 
-		        return 0;
+		        return new data(0);
 		    if (l == tl && r == tr) 
 		        return seg[v];
 		    int tm = (tl + tr) / 2;
-		    return query(v*2, tl, tm, l, min(r, tm))+query(v*2+1, tm+1, tr, max(l, tm+1), r);
+		    return combine(query(v*2, tl, tm, l, min(r, tm)),query(v*2+1, tm+1, tr, max(l, tm+1), r));
 		}
 	}
 	
