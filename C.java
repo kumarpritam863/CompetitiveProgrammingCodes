@@ -3,37 +3,39 @@ import java.io.FileInputStream;
 import java.io.IOException; 
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Scanner; 
+import java.util.StringTokenizer; 
 import java.io.BufferedReader; 
 import java.util.*;
+
+
 
 public class C{
 	public static FastReader fs = new FastReader();
 	
 	static PrintWriter out = new PrintWriter(System.out);
 	
-	public static void solve() {
+	static void solve() {
 		StringBuffer output = new StringBuffer();
-		int n = fs.nextInt();long x = fs.nextLong();
-		long a [] = new long [n];
-		for(int i = 0; i<n; i++)a[i] = fs.nextLong();
-		int ans = 0;
-		reverselongsort(a);
-		//for(int i = 0; i<n; i++)out.println(a[i]);
-		int i = 0;
-		int count = 1;
-		while(i < n) {
-			if(ceil(x,a[i])<=count) {
-				ans += 1;
-				count = 1;
-				i++;
-			}
-			else {
-				i++;
-				count++;
-			}
+		char s [] = fs.next().toCharArray();
+		int moves [] = new int [4];
+		for(int i = 0; i<s.length; i++) {
+			if(s[i] == 'L')moves[0] += 1;
+			if(s[i] == 'R')moves[1] += 1;
+			if(s[i] == 'U')moves[2] += 1;
+			if(s[i] == 'D')moves[3] += 1;
 		}
-		output.append(ans);
-		out.println(output);
+		if(min(moves[0],moves[1]) == 0 && min(moves[2],moves[3]) == 0) output.append("");
+		else if(min(moves[0],moves[1]) == 0)output.append("UD");
+		else if(min(moves[2],moves[3]) == 0)output.append("LR");
+		else {
+			for(int i = 0; i<min(moves[0],moves[1]); i++)output.append('R');
+			for(int i = 0; i<min(moves[2],moves[3]); i++)output.append('U');
+			for(int i = 0; i<min(moves[0],moves[1]); i++)output.append('L');
+			for(int i = 0; i<min(moves[2],moves[3]); i++)output.append('D');
+		}
+		out.println(output.length());
+		if(output.length() != 0)out.println(output);
 	}
 	
 	public static void main(String[] args) {
@@ -102,31 +104,55 @@ public class C{
         } 
     } 
 	
-	public static int ceil(int x,int y) {
+	static int ceil(int x,int y) {
 		return (x % y == 0 ? x / y : (x / y +1));
 	}
 	
-	public static long ceil(long x,long y) {
+	static long ceil(long x,long y) {
 		return (x % y == 0 ? x / y : (x / y +1));
 	}
 	
-	public static int max(int x,int y) {
+	static int max(int x,int y) {
 		return Math.max(x, y);
 	}
 	
-	public static int min(int x,int y) {
+	static int min(int x,int y) {
 		return Math.min(x, y);
 	}
 	
-	public static long max(long x,long y) {
+	static long max(long x,long y) {
 		return Math.max(x, y);
 	}
 	
-	public static long min(long x,long y) {
+	static long min(long x,long y) {
 		return Math.min(x, y);
 	}
 	
-	public static int power(int x,int y) {
+	static int min(int a []) {
+		int x = 1_000_000_00_9;
+		for(int i = 0; i<a.length; i++)x = min(x,a[i]);
+		return x;
+	}
+	
+	static int max(int a []) {
+		int x = -1_000_000_00_9;
+		for(int i = 0; i<a.length; i++)x = max(x,a[i]);
+		return x;
+	}
+	
+	static long min(long a []) {
+		long x = (long)3e18;
+		for(int i = 0; i<a.length; i++)x = min(x,a[i]);
+		return x;
+	}
+	
+	static long max(long a []) {
+		long x = -(long)3e18;
+		for(int i = 0; i<a.length; i++)x = max(x,a[i]);
+		return x;
+	}
+	
+	static int power(int x,int y) {
 		int res = 1;
 		while(y > 0) {
 			if( y % 2 == 1)res = (res * x);
@@ -136,7 +162,7 @@ public class C{
 		return res;
 	}
 	
-	public static long power(long x,long y) {
+	static long power(long x,long y) {
 		long res = 1;
 		while(y > 0) {
 			if( y % 2 == 1)res = (res * x);
@@ -146,7 +172,7 @@ public class C{
 		return res;
 	}
 	
-	public static long power(long x,long y,long mod) {
+	static long power(long x,long y,long mod) {
 		long res = 1;
 		x %= mod;
 		while(y > 0) {
@@ -157,21 +183,21 @@ public class C{
 		return res;
 	}
 	
-	public static void intsort(int [] a) {
+	static void intsort(int [] a) {
 		List<Integer> temp = new ArrayList<Integer>();
 		for(int i = 0; i<a.length; i++)temp.add(a[i]);
 		Collections.sort(temp);
 		for(int i = 0; i<a.length; i++)a[i] = temp.get(i);
 	}
 	
-	public static void longsort(long [] a) {
+	static void longsort(long [] a) {
 		List<Long> temp = new ArrayList<Long>();
 		for(int i = 0; i<a.length; i++)temp.add(a[i]);
 		Collections.sort(temp);
 		for(int i = 0; i<a.length; i++)a[i] = temp.get(i);
 	}
 	
-	public static void reverseintsort(int [] a) {
+	static void reverseintsort(int [] a) {
 		List<Integer> temp = new ArrayList<Integer>();
 		for(int i = 0; i<a.length; i++)temp.add(a[i]);
 		Collections.sort(temp);
@@ -179,14 +205,15 @@ public class C{
 		for(int i = 0; i<a.length; i++)a[i] = temp.get(i);
 	}
 	
-	public static void reverselongsort(long [] a) {
+	static void reverselongsort(long [] a) {
 		List<Long> temp = new ArrayList<Long>();
 		for(int i = 0; i<a.length; i++)temp.add(a[i]);
 		Collections.sort(temp);
-		for(int i = a.length-1; i>=0; i--)a[a.length-1-i] = temp.get(i);
+		Collections.reverseOrder();
+		for(int i = 0; i<a.length; i++)a[i] = temp.get(i);
 	}
 	
-	public static void intpairsort(intpair [] a) {
+	static void intpairsort(intpair [] a) {
 		List<intpair> temp = new ArrayList<intpair>();
 		for(int i = 0; i<a.length; i++)temp.add(a[i]);
 		Collections.sort(temp,(p1,p2) -> {
@@ -196,7 +223,7 @@ public class C{
 		for(int i = 0; i<a.length; i++)a[i] = temp.get(i);
 	}
 	
-	public static void longpairsort(longpair [] a) {
+	static void longpairsort(longpair [] a) {
 		List<longpair> temp = new ArrayList<longpair>();
 		for(int i = 0; i<a.length; i++)temp.add(a[i]);
 		Collections.sort(temp,(p1,p2) -> {
@@ -206,7 +233,7 @@ public class C{
 		for(int i = 0; i<a.length; i++)a[i] = temp.get(i);
 	}
 	
-	public static class intpair{
+	static class intpair{
 		public int x;
 		public int y;
 		
@@ -218,7 +245,7 @@ public class C{
 		intpair(){}
 	}
 	
-	public static class longpair{
+	static class longpair{
 		public long x;
 		public long y;
 		
@@ -230,7 +257,7 @@ public class C{
 		longpair(){}
 	}
 	
-	public static class data{
+	static class data{
 		public long sum;
 		
 		data(long val){
@@ -246,67 +273,67 @@ public class C{
 		}
 	}
 	
-	public static class Seg_Tree extends data{
+	static class Seg_Tree extends data{
 		public int n;
-		long [] seg;
+		data [] seg;
 		
 		Seg_Tree(int sz){
 			this.n = sz;
-			seg = new long[4*n+4];
+			seg = new data[4*n+4];
 		}
 		
 		void build(long a[], int v, int tl, int tr) {
 		    if (tl == tr) {
-		        seg[v] = a[tl];
+		        seg[v] = new data(a[tl]);
 		    } else {
 		        int tm = (tl + tr) / 2;
 		        build(a, v*2, tl, tm);
 		        build(a, v*2+1, tm+1, tr);
-		        seg[v] = seg[v*2]+seg[v*2+1];
+		        seg[v] = combine(seg[v*2],seg[v*2+1]);
 		    }
 		}
 
 		void update(int v, int tl, int tr, int pos, long new_val) {
 		    if (tl == tr) {
-		        seg[v] = new_val;
+		        seg[v] = new data(new_val);
 		    } else {
 		        int tm = (tl + tr) / 2;
 		        if (pos <= tm)
 		            update(v*2, tl, tm, pos, new_val);
 		        else
 		            update(v*2+1, tm+1, tr, pos, new_val);
-		        seg[v] = seg[v*2]+seg[v*2+1];
+		        seg[v] = combine(seg[v*2],seg[v*2+1]);
 		    }
 		}
 		
-		long query(int v, int tl, int tr, int l, int r) {
+		data query(int v, int tl, int tr, int l, int r) {
 		    if (l > r) 
-		        return 0;
+		        return new data(0);
 		    if (l == tl && r == tr) 
 		        return seg[v];
 		    int tm = (tl + tr) / 2;
-		    return query(v*2, tl, tm, l, min(r, tm))+query(v*2+1, tm+1, tr, max(l, tm+1), r);
+		    return combine(query(v*2, tl, tm, l, min(r, tm)),query(v*2+1, tm+1, tr, max(l, tm+1), r));
 		}
 	}
 	
-	public static class Bit_Tree{
-		public static int n;
-		public static int [] bit;
+	static class Bit_Tree{
+		static int n;
+		static int [] bit;
 		
 		Bit_Tree(int sz){
 			Bit_Tree.n = sz;
 			Bit_Tree.bit = new int[n+1];
 		}
 		
-		public static int child(int x) {
+		static int child(int x) {
 			return x + (x & (-x));
 		}
 		
-		public static int parent(int x) {
+		static int parent(int x) {
 			return x - (x & (-x));
 		}
 		
-		public static void build(int [] a) {
+		static void build(int [] a) {
 			for(int i = 0; i<a.length; i++) {
 				int start = i+1;
 				while(start <= n) {
@@ -316,7 +343,7 @@ public class C{
 			}
 		}
 		
-		public static void update(int idx,int new_val) {
+		static void update(int idx,int new_val) {
 			idx += 1;
 			while(idx <= n) {
 				bit[idx] += new_val;
@@ -324,7 +351,7 @@ public class C{
 			}
 		}
 		
-		public static int query(int right) {
+		static int query(int right) {
 			int res = 0;
 			while(right > 0) {
 				res += bit[right];
@@ -333,7 +360,7 @@ public class C{
 			return res;
 		}
 		
-		public static int query(int left,int right) {
+		static int query(int left,int right) {
 			return query(right) - query(left-1);
 		}
 	}
